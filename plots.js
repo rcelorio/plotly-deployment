@@ -19,7 +19,7 @@ function init() {
           .text(sample)
           .property("value", sample);
         });
-
+        buildMetadata(d3.select("#selDataset").node().value);
     })
 }
 
@@ -51,4 +51,3 @@ function optionChanged(newSample) {
   init();
  
   
-  buildMetadata(d3.select("#selDataset").node().value);
