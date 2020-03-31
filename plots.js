@@ -19,7 +19,7 @@ function init() {
           .text(sample)
           .property("value", sample);
         });
-        buildMetadata(d3.select("#selDataset").node().value);
+        optionChanged(d3.select("#selDataset").node().value);
     })
 }
 
