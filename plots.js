@@ -4,6 +4,8 @@ function init() {
     d3.json("samples.json").then((data) => {
       console.log(data);
       var sampleNames = data.names;
+      // Add default option
+      sampleNames.splice(0,0, "Choose ID")
       sampleNames.forEach((sample) => {
         selector
           .append("option")
