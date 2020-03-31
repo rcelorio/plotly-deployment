@@ -1,24 +1,27 @@
+
+
+
+
+
+
+
+
+
+
 function init() {
     var selector = d3.select("#selDataset");
   
     d3.json("samples.json").then((data) => {
-      console.log(data);
       var sampleNames = data.names;
-      // Add default option
-      sampleNames.splice(0,0, "Choose ID")
       sampleNames.forEach((sample) => {
         selector
           .append("option")
           .text(sample)
           .property("value", sample);
-      });
-  })}
+        });
 
-  // select control
-  function optionChanged(newSample) {
-    buildMetadata(newSample);
-    //buildCharts(newSample);
-  }
+    })
+}
 
   // build panel metadata
   function buildMetadata(sample) {
@@ -29,20 +32,23 @@ function init() {
       var PANEL = d3.select("#sample-metadata");
   
       PANEL.html("");
- 
-      PANEL.append("h6").text("ID: " + result.id);
-      PANEL.append("h6").text("ETHNICITY: " + result.ethnicity);
-      PANEL.append("h6").text("GENDER: " + result.gender);
-      PANEL.append("h6").text("AGE: " + result.age);
-      PANEL.append("h6").text("LOCATION: " + result.location);
-      PANEL.append("h6").text("BBTYPE: " + result.bbtype);
-      PANEL.append("h6").text("WFREQ: " + result.wfreq);
-     
-     
+      //iterate through the result
+      Object.entries(result).forEach(([key,val]) => {
+        PANEL.append("h6").text(key + ": " + val);
+      });     
     });
   }
 
 
 
-  
+// select control
+function optionChanged(newSample) {
+  buildMetadata(newSample);
+  //buildCharts(newSample);
+}
+
+
   init();
+ 
+  
+  buildMetadata(d3.select("#selDataset").node().value);
