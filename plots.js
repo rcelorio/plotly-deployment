@@ -12,7 +12,7 @@ function init() {
           .property("value", sample);
         });
         //load the demographics for the 1st time
-        optionChanged(d3.select("#selDataset").node().value);
+       optionChanged(d3.select("#selDataset").node().value);
     })
 }
 
@@ -35,22 +35,15 @@ function init() {
 //build the bar chart
 function buildBarChart(data) {
 
-  //console.log(data);
-  //sort by value
-/*  let test = data.sort(function(a, b) {
-    return parseFloat(b.sample_values) - parseFloat(a.sample_values);
-  }); */
-
-    let sampleValues = data.sample_values.slice(0,10);
-   // sampleValues.forEach(foo => console.log(foo));
+  //grab the top 10
+  let sampleValues = data.sample_values.slice(0,10);
+  let otuIds = data.otu_ids.slice(0,10);
+  let otuLabels = data.otu_labels.slice(0,10);
+  
+  // reverse it
   sampleValues.reverse();
-    let otuIds = data.otu_ids.slice(0,10);
-   // otuIds.forEach(foo => console.log(foo));
-   otuIds.reverse();
-    let otuLabels = data.otu_labels.slice(0,10);
-   // otuLabels.forEach(foo => console.log(foo));
-   otuLabels.reverse();
-
+  otuIds.reverse();
+  otuLabels.reverse();
 
 // Trace1 for the Greek Data
 let trace1 = {
@@ -78,10 +71,47 @@ let layout = {
 
 // Render the plot to the div tag with id "plot"
 Plotly.newPlot("bar", data1, layout);
+}
+
+// build the buble chart
+
+function buildBubble(data) {
+  //get the data
+  let sampleValues = data.sample_values;
+  let otuIds = data.otu_ids;
+  let otuLabels = data.otu_labels;
 
 
+  let trace1 = {
+    x: otuIds,
+    y: sampleValues,
+    text: otuLabels,
+    mode: 'markers',
+    marker: {
+      size: sampleValues.map(size => size * .65),
+      color: otuIds,
+      colorscale: 'Earth'
+    }
 
-
+  };
+  
+  let data1 = [trace1];
+  
+  let layout = {
+    title: "<b>Relative Frequency of Bacterial Species</b> <br> Samples per OTU ID</b>",
+    xaxis: {
+      title: 'OTU ID',
+    },
+    yaxis: {
+      title: 'Sample Value'
+    },
+    width: 1100,
+    plot_bgcolor: 'rgba(0, 0, 0, 0)',
+    aper_bgcolor: 'rgba(0, 0, 0, 0)',
+    showlegend: false,
+  };
+  
+  Plotly.newPlot('bubble', data1, layout, {responsive: true});
 }
 
 
@@ -99,6 +129,7 @@ function optionChanged(newSample) {
     let sampleSample = data.samples.forEach((sampleObj1) => {
       if (parseFloat(sampleObj1.id) == newSample) {
         buildBarChart(sampleObj1);
+        buildBubble(sampleObj1);
       }});
     
     //buildBarChart(sampleSample);
