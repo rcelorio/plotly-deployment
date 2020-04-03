@@ -60,7 +60,7 @@ let data1 = [trace1];
 
 // Apply the group bar mode to the layout
 let layout = {
-  title: "Top 10 OTU Results",
+  title: "<b>Top 10 Bacteria Species</b> <br> Samples per OTU ID</b>",
   margin: {
     l: 100,
     r: 100,
@@ -81,7 +81,6 @@ function buildBubble(data) {
   let otuIds = data.otu_ids;
   let otuLabels = data.otu_labels;
 
-
   let trace1 = {
     x: otuIds,
     y: sampleValues,
@@ -91,12 +90,11 @@ function buildBubble(data) {
       size: sampleValues.map(size => size * .65),
       color: otuIds,
       colorscale: 'Earth'
-    }
-
-  };
+      }
+    };
   
   let data1 = [trace1];
-  
+  // define the layout
   let layout = {
     title: "<b>Relative Frequency of Bacterial Species</b> <br> Samples per OTU ID</b>",
     xaxis: {
@@ -112,7 +110,86 @@ function buildBubble(data) {
   };
   
   Plotly.newPlot('bubble', data1, layout, {responsive: true});
-}
+} // end buildBubble
+
+// build the gauge
+// Muchos thankyous to: https://com2m.de/blog/technology/gauge-charts-with-plotly/
+function buildGauge(sample) {
+
+  d3.json("samples.json").then((data) => {
+    var metadata = data.metadata;
+    var resultArray = metadata.filter(sampleObj => sampleObj.id == sample);
+    var result = resultArray[0];
+    //get the samples frequency value
+    let sampleWfreq = result.wfreq;
+    
+    
+    //define x and y position for tip
+    var degrees = (9 - sampleWfreq) * 20,
+        radius = .5;
+    var radians = degrees * Math.PI / 180;
+    var x = radius * Math.cos(radians);
+    var y = radius * Math.sin(radians);
+
+    //create the pointer triangle
+    var mainPath = 'M .0 -0.025 L .0 0.025 L ',
+      pathX = String(x),
+      space = ' ',
+      pathY = String(y),
+      pathEnd = ' Z';
+    var path = mainPath.concat(pathX,space,pathY,pathEnd);
+
+    // define some data
+    var datagauge = [
+      { type: 'scatter',
+        x: [0,], y:[0],
+      marker: {size: 28, color:'850000'},
+      showlegend: false,
+      name: 'scrubs',
+      text: result.wfreq,
+      hoverinfo: 'text+name'},
+      
+      { values: [50/9, 50/9, 50/9, 50/9, 50/9, 50/9,50/9,50/9,50/9, 50],
+      rotation: 90,
+      text: ['8-9', '7-8', '6-7','5-6', '4-5', '3-4', '2-3',
+              '1-2', '0-1', ''],
+      textinfo: 'text',
+      textposition:'inside',
+      marker: {colors:['rgba(30,120,30, .5)', 'rgba(55,135,55, .5)','rgba(80,150,80, .5)',
+              'rgba(105,165,105, .5)', 'rgba(130,180,130, .5)','rgba(155,195,155, .5)',
+                'rgba(180,210,180, .5)','rgba(205,225,205, .5)', 'rgba(230,240,230, .5)',
+                            'rgba(255, 255, 255, 0)']},
+      hoverinfo: 'none',
+      hole: .5,
+      type: 'pie',
+      showlegend: false}
+      ];
+
+      // define the layout
+      var layout = {
+        shapes:[{
+          type: 'path',
+          path: path,
+          fillcolor: '850000',
+          line: { color: '850000' }
+        }],
+        title: '<b>Belly Button Washing Frequency</b><br>Scrubs per Week',
+        height: 600,
+        width: 600,
+        
+        // move zero to the center
+        xaxis: {zeroline:false, showticklabels:false,
+              showgrid: false, range: [-1, 1]},
+        yaxis: {zeroline:false, showticklabels:false,
+              showgrid: false, range: [-1, 1]}
+      };
+
+    Plotly.newPlot('gauge', datagauge, layout);  
+ 
+  });
+}//end buildGauge
+
+
 
 
 // select control
@@ -124,20 +201,17 @@ function optionChanged(newSample) {
     
     
     //let sampleNames = data.names.filter(sampleObj => sampleObj.id == newSample);
-    //let sampleSample = data.samples.filter(sampleObj1 => {parseFloat(sampleObj1.id )== newSample});
+    //let sampleSample = data.samples.map(sampleObj1 => {parseFloat(sampleObj1.id )== newSample});
     
     let sampleSample = data.samples.forEach((sampleObj1) => {
       if (parseFloat(sampleObj1.id) == newSample) {
         buildBarChart(sampleObj1);
         buildBubble(sampleObj1);
+        buildGauge(newSample);
       }});
     
-    //buildBarChart(sampleSample);
   });
 
-
-  //buildBarChart(newSample);
-  //buildCharts(newSample);
 }
 
 
