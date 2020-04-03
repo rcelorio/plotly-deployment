@@ -67,8 +67,7 @@ let layout = {
     t: 100,
     b: 100
   },
-  height: 450,
-  width: 450
+  height: 450
 };
 
 // Render the plot to the div tag with id "plot"
@@ -89,7 +88,7 @@ function buildBubble(data) {
     text: otuLabels,
     mode: 'markers',
     marker: {
-      //degrease the size to 65%
+      //decrease the size to 65%
       size: sampleValues.map(size => size * .65),
       color: otuIds,
       //set the color to Eart theme
@@ -108,7 +107,6 @@ function buildBubble(data) {
       title: 'Sample Value'
     },
     height: 600,
-    width: 1200,
     plot_bgcolor: 'rgba(0, 0, 0, 0)',
     aper_bgcolor: 'rgba(0, 0, 0, 0)',
     showlegend: false,
@@ -201,14 +199,10 @@ function buildGauge(sample) {
 function optionChanged(newSample) {
   buildMetadata(newSample);
 
-
   d3.json("samples.json").then((data) => {
     
-    
-    //let sampleNames = data.names.filter(sampleObj => sampleObj.id == newSample);
-    //let sampleSample = data.samples.map(sampleObj1 => {parseFloat(sampleObj1.id )== newSample});
-    
     let sampleSample = data.samples.forEach((sampleObj1) => {
+      // select new sample and refres the visualizations
       if (parseFloat(sampleObj1.id) == newSample) {
         buildBarChart(sampleObj1);
         buildBubble(sampleObj1);
