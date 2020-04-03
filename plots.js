@@ -109,7 +109,7 @@ function buildBubble(data) {
     showlegend: false,
   };
   
-  Plotly.newPlot('bubble', data1, layout, {responsive: true});
+  Plotly.newPlot('bubble', data1, layout);
 } // end buildBubble
 
 // build the gauge
