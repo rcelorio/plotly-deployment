@@ -66,7 +66,9 @@ let layout = {
     r: 100,
     t: 100,
     b: 100
-  }
+  },
+  height: 450,
+  width: 450
 };
 
 // Render the plot to the div tag with id "plot"
@@ -87,8 +89,10 @@ function buildBubble(data) {
     text: otuLabels,
     mode: 'markers',
     marker: {
+      //degrease the size to 65%
       size: sampleValues.map(size => size * .65),
       color: otuIds,
+      //set the color to Eart theme
       colorscale: 'Earth'
       }
     };
@@ -103,7 +107,8 @@ function buildBubble(data) {
     yaxis: {
       title: 'Sample Value'
     },
-    width: 1100,
+    height: 600,
+    width: 1200,
     plot_bgcolor: 'rgba(0, 0, 0, 0)',
     aper_bgcolor: 'rgba(0, 0, 0, 0)',
     showlegend: false,
@@ -174,8 +179,8 @@ function buildGauge(sample) {
           line: { color: '850000' }
         }],
         title: '<b>Belly Button Washing Frequency</b><br>Scrubs per Week',
-        height: 600,
-        width: 600,
+        height: 450,
+        width: 450,
         
         // move zero to the center
         xaxis: {zeroline:false, showticklabels:false,
